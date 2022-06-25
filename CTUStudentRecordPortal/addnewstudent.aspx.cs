@@ -49,176 +49,215 @@ namespace CTUStudentRecordPortal
                 status = "Regular";
 
 
-            if (id.Length == 0)
+
+            if (CheckAllTextboxIsEmpty() == false)
             {
-                
-            }
-            else
-            {
-                if (CheckDuplicate() == false)
+                if(CheckDuplicateStudentInformation() == false)
                 {
-                    if (lname.Length == 0)
+                    if(CheckAllTextboxFormat() == true)
                     {
-                        ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "lnameTextBoxBorder();", true);
-                    }
-                    else
-                    {
-                        if (gender == "--Select Gender--")
+                        if (pictureUpload.HasFile)
                         {
-                            ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "genderTextBoxBorder();", true);
-                        }
-                        else
-                        {
-                            if (fname.Length == 0)
+                            int year = int.Parse(yearlevelTB.Text);
+                            int credit = int.Parse(creditunitTB.Text);
+                            try
                             {
-                                ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "fnameTextBoxBorder();", true);
-                            }
-                            else
-                            {
-                                if (mname.Length == 0)
+                                string extension = Path.GetExtension(pictureUpload.FileName);
+                                if (extension == ".jpg" || extension == ".JPG" || extension == ".jpeg" || extension == ".JPEG" || extension == ".png" || extension == ".PNG")
                                 {
-                                    ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "mnameTextBoxBorder();", true);
-                                }
-                                else
-                                {
-                                    if (birth.Length == 0)
+                                    if (pictureUpload.PostedFile.ContentLength <= 2097152)
                                     {
-                                        ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "window.alert('Enter the student birthdate');", true);
-                                        ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "bdayTextBoxBorder();", true);
+                                        pictureUpload.SaveAs(Server.MapPath("images/") + filename + extension.ToLower());
+                                        connect.Open();
+                                        SqlCommand command = new SqlCommand("insert into StudentRecordTable values('" + id + "','" + lname + "','" + fname + "','" + mname + "','" + suf + "','" + gender + "','" + birth + "','" + address + "','" + email + "','" + contact + "','" + program + "','" + year + "','" + status + "','" + credit + "','" + pictureUpload.FileName + "')", connect);
+                                        int x = command.ExecuteNonQuery();
+                                        if (x == 1)
+                                        {
+                                            ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "window.alert('New student information is successfully added!');", true);
+                                        }
+                                        connect.Close();
+                                        ClearAllContents();
                                     }
                                     else
                                     {
-                                        if (birth.Length != 10)
-                                        {
-                                            ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "window.alert('Enter the date correct format');", true);
-                                            ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "bdayTextBoxBorder();", true);
-                                            birthdateTB.Text = null;
-                                        }
-                                        else
-                                        {
-                                            if (address.Length == 0)
-                                            {
-                                                ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "window.alert('Enter the students address');", true);
-                                                ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "addressTextBoxBorder();", true);
-                                            }
-                                            else
-                                            {
-                                                if (email.Length == 0)
-                                                {
-                                                    ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "window.alert('Enter the student email address');", true);
-                                                    ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "emailTextBoxBorder();", true);
-                                                }
-                                                else
-                                                {
-                                                    if (contact.Length == 0)
-                                                    {
-                                                        ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "window.alert('Enter the student contact number');", true);
-                                                        ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "contactTextBoxBorder();", true);
-                                                    }
-                                                    else
-                                                    {
-                                                        if (contact.Length != 11)
-                                                        {
-                                                            ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "window.alert('Enter the correct contact number format');", true);
-                                                            ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "contactTextBoxBorder();", true);
-                                                            contactTB.Text = null;
-                                                        }
-                                                        else
-                                                        {
-                                                            if (program == "--Select Course--")
-                                                            {
-                                                                ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "window.alert('Select the student enrolled course');", true);
-                                                                ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "programTextBoxBorder();", true);
-                                                            }
-                                                            else
-                                                            {
-                                                                if (yearlevelTB.Text == "--Select Year Level--")
-                                                                {
-                                                                    ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "window.alert('Select the student year level');", true);
-                                                                    ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "yearTextBoxBorder();", true);
-                                                                }
-                                                                else
-                                                                {
-                                                                    if (cred.Length == 0)
-                                                                    {
-                                                                        ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "window.alert('Enter the student credit unit');", true);
-                                                                        ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "creditTextBoxBorder();", true);
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        if (pictureUpload.HasFile)
-                                                                        {
-                                                                            int year = int.Parse(yearlevelTB.Text);
-                                                                            int credit = int.Parse(creditunitTB.Text);
-                                                                            try
-                                                                            {
-                                                                                string extension = Path.GetExtension(pictureUpload.FileName);
-                                                                                if (extension == ".jpg" || extension == ".JPG" || extension == ".jpeg" || extension == ".JPEG" || extension == ".png" || extension == ".PNG")
-                                                                                {
-                                                                                    if (pictureUpload.PostedFile.ContentLength <= 2097152)
-                                                                                    {
-                                                                                        pictureUpload.SaveAs(Server.MapPath("images/") + filename + extension.ToLower());
-                                                                                        connect.Open();
-                                                                                        SqlCommand command = new SqlCommand("insert into StudentRecordTable values('" + id + "','" + lname + "','" + fname + "','" + mname + "','" + suf + "','" + gender + "','" + birth + "','" + address + "','" + email + "','" + contact + "','" + program + "','" + year + "','" + status + "','" + credit + "','" + pictureUpload.FileName + "')", connect);
-                                                                                        int x = command.ExecuteNonQuery();
-                                                                                        if (x == 1)
-                                                                                        {
-                                                                                            ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "window.alert('New student information is successfully added!');", true);
-                                                                                        }
-                                                                                        connect.Close();
-                                                                                        ClearAllContents();
-                                                                                    }
-                                                                                    else
-                                                                                    {
-                                                                                        ErrorMessage(3);
-                                                                                    }
-                                                                                }
-                                                                                else
-                                                                                {
-                                                                                    ErrorMessage(2);
-                                                                                }
-                                                                            }
-                                                                            catch (Exception ex)
-                                                                            {
-                                                                                ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "window.alert('Cannot add student due to error: " + ex + " ');", true);
-                                                                            }
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "showErrorMessage0();", true);
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-
-                                                }
-                                            }
-                                        }
+                                        ErrorMessage(3);
                                     }
                                 }
+                                else
+                                {
+                                    ErrorMessage(2);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "window.alert('Cannot add student due to error: " + ex + " ');", true);
                             }
                         }
+                        else
+                        {
+                            ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "showErrorMessage0();", true);
+                        }
                     }
-                }
-                else
-                {
-                    ErrorMessage(1);
                 }
             }
         }
 
-        //checks if id textbox is empty/null
+
+        //checks all textbox is empty/null
+        private bool CheckAllTextboxIsEmpty()
+        {
+            bool empty = false;
+            if(CheckIdIsEmpty() == false)
+            {
+                if(CheckLastnameIsEmpty() == false)
+                {
+                    if(CheckFirstnameIsEmpty() == false)
+                    {
+                        if(CheckMiddlenameIsEmpty() == false)
+                        {
+                            if(CheckBirthdateIsEmpty() == false)
+                            {
+                                if(CheckBirthdateIsEmpty() == false)
+                                {
+                                    if(CheckEmailIsEmpty() == false)
+                                    {
+                                        if(CheckAddressIsEmpty() == false)
+                                        {
+                                            if(CheckContactNumIsEmpty() == false)
+                                            {
+                                                if(CheckCreditUnitIsEmpty() == false)
+                                                {
+                                                    empty = false;
+                                                }
+                                                else
+                                                {
+                                                    empty = true;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                empty = true;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            empty = true;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        empty = true;
+                                    }
+                                }
+                                else
+                                {
+                                    empty = true;
+                                }
+                            }
+                            else
+                            {
+                                empty = true;
+                            }
+                        }
+                        else
+                        {
+                            empty = true;
+                        }
+                    }
+                    else
+                    {
+                        empty = true;
+                    }
+                }
+                else
+                {
+                    empty = true;
+                }
+            }
+            else
+            {
+                empty = true;
+            }
+
+
+            return empty;
+
+        }
+
+        //checks all the textbox format is correct or not
+        private bool CheckAllTextboxFormat()
+        {
+            bool format = true;
+
+            if(CheckGenderListTextbox() == false)
+            {
+                if (CheckBirthdateFormat() == false)
+                {
+                    if (CheckContactNumFormat() == false)
+                    {
+                        if(CheckEnrolledProgramListTextbox() == false)
+                        {
+                            if(CheckYearlevelListTextBox() == false)
+                            {
+                                try
+                                {
+                                    int credit = int.Parse(creditunitTB.Text);
+                                    format = false;
+                                }catch (FormatException fe)
+                                {
+                                    format = true;
+                                    ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "creditTextBoxBorder();", true);
+                                    ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "window.alert('Error due to :"+fe+"');", true);
+                                }
+                            }
+                            else
+                            {
+                                format = true;
+                            }
+                        }
+                        else
+                        {
+                            format = true;
+                        }
+                    }
+                    else
+                    {
+                        format = true;
+                    }
+                }
+                else
+                {
+                    format = true;
+                }
+            }
+            else 
+            {
+                format = true;
+            }
+
+            return format;
+        }
+
+        //checks if id textbox is empty/null and checks if id textbox contains a character
         private bool CheckIdIsEmpty()
         {
             bool empty = false;
             if (idTB.Text.Length == 0)
             {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "idTextBoxBorder();", true);
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "idTextboxIsEmpty();", true);
                 empty = true;
             }
 
+            for(int i = 0; i < idTB.Text.Length; i++)
+            {
+                bool result = Char.IsLetter(idTB.Text, i);
+                if(result == true)
+                {
+                    empty = true;
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "idTextboxContainsCharacter();", true);
+                    break;
+                }
+            }
 
             return empty;
         }
@@ -229,7 +268,7 @@ namespace CTUStudentRecordPortal
 
             if(lastnameTB.Text.Length == 0)
             {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "lnameTextBoxBorder();", true);
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "lnameTextboxIsEmpty();", true);
                 empty = true;
             }
 
@@ -275,9 +314,147 @@ namespace CTUStudentRecordPortal
             return empty;
         }
 
-        private bool CheckDuplicate()
+        //checks if email textbox is empty/null
+        private bool CheckEmailIsEmpty()
+        {
+            bool empty = false;
+
+            if(emailTB.Text.Length == 0)
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "emailTextBoxBorder();", true);
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "window.alert('Enter the student email address');", true);
+                empty = true;
+            }
+
+            return empty;
+        }
+
+        //checks if address textbox is empty/null
+        private bool CheckAddressIsEmpty()
+        {
+            bool empty = false;
+
+            if(addressTB.Text.Length == 0)
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "window.alert('Enter the student email address');", true);
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "addressTextBoxBorder();", true);
+                empty = true;
+            }
+
+            return empty;
+        }
+
+        //checks ifcontact num textbox is empty/null
+        private bool CheckContactNumIsEmpty()
+        {
+            bool empty = false;
+
+            if(contactTB.Text.Length == 0)
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "contactTextBoxBorder();", true);
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "window.alert('Enter the student contact number');", true);
+                empty = true;
+            }
+
+            return empty;
+        }
+
+        //checks if credit unit textbox is empty/null
+        private bool CheckCreditUnitIsEmpty()
+        {
+            bool empty = false;
+
+            if(creditunitTB.Text.Length == 0)
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "creditTextBoxBorder();", true);
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "window.alert('Enter the student credit unit');", true);
+                empty = true;
+            }
+            return empty;
+        }
+
+        //checks if birthdate entered in a correct format mm/dd/yyyy
+        private bool CheckBirthdateFormat()
+        {
+            bool format = true;
+
+            if(birthdateTB.Text.Length != 10)
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "bdayTextBoxBorder();", true);
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "window.alert('Enter the date correct format');", true);
+                format = false;
+                birthdateTB.Text = null;
+            }
+
+            return format;
+        }
+
+        //checks if contact number is entered in a correct format 09XXXXXXXX
+        private bool CheckContactNumFormat()
+        {
+            bool format = true;
+            if (contactTB.Text.Length != 11)
+            { 
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "contactTextBoxBorder();", true);
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "window.alert('Enter the correct contact number format');", true);
+                contactTB.Text = null;
+                format = false;
+            }
+
+            return format;
+        }
+
+        //checks if gender is selected the default choice
+        private bool CheckGenderListTextbox()
+        {
+            bool format = true;
+
+            if(genderTB.Text == "--Select Gender--")
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "genderTextboxDefaultChoice();", true);
+                format = false;
+            }
+
+            return format;
+        }
+
+        //checks if enrolled program is selected the default choice
+        private bool CheckEnrolledProgramListTextbox()
+        {
+            bool format = true;
+
+            if (enrolledprogramTB.Text == "--Select Course--")
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "programTextBoxBorder();", true);
+                format = false;
+            }
+
+            return format;
+        }
+
+        //checks if year level is selected the default choice
+        private bool CheckYearlevelListTextBox()
+        {
+            bool format = true;
+
+            if (yearlevelTB.Text == "--Select Year Level--")
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "yearTextBoxBorder();", true);
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "window.alert('Select the student year level');", true);
+                format = false;
+            }
+
+            return format;
+
+
+        }
+
+        //checks if theres a duplicate student information using its student id
+        private bool CheckDuplicateStudentInformation()
         {
             bool duplicate = false;
+            string message = "Student Id is in use";
+            int i = 2;
             string conString = WebConfigurationManager.ConnectionStrings["studentrecorddbconnection"].ConnectionString;
             SqlConnection connect = new SqlConnection(conString);
             connect.Open();
@@ -286,6 +463,10 @@ namespace CTUStudentRecordPortal
                 if (r.HasRows)
                 {
                     duplicate = true;
+                }
+                else
+                {
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "idTextBoxBorder();", true);
                 }
             connect.Close();
 
@@ -309,6 +490,7 @@ namespace CTUStudentRecordPortal
             }
         }
 
+        //clears all the textbox values/contents
         private void ClearAllContents()
         {
             idTB.Text = null;
@@ -346,6 +528,7 @@ namespace CTUStudentRecordPortal
         {
             bool result = false;
 
+            //checks if search student id textbox contains a alphabet
             for(int i = 0; i < searchTB.Text.Length; i++)
             {
                 result = Char.IsLetter(searchTB.Text, i);

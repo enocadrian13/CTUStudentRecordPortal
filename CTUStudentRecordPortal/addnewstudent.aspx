@@ -353,6 +353,37 @@
                 text-indent: 10px; 
                 font-size: 20px;
             }
+
+            .alert {
+                padding: 20px;
+                background-color: #f44336;
+                color: white;
+                opacity: 1;
+                transition: opacity 0.6s;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 1500px;
+            }
+
+            .alert.success {background-color: #04AA6D;}
+            .alert.info {background-color: #2196F3;}
+            .alert.warning {background-color: #ff9800;}
+
+            .closebtn {
+                margin-left: 15px;
+                color: white;
+                font-weight: bold;
+                float: right;
+                font-size: 22px;
+                line-height: 20px;
+                cursor: pointer;
+                transition: 0.3s;
+            }
+
+            .closebtn:hover {
+                color: black;
+            }
     </style>
     <script>
         var br = "1px solid red";
@@ -369,70 +400,165 @@
             document.getElementById('error-message').innerHtml = "file should not exceed 2mb or 2000kb";
         }
 
+        //sets search student id textbox border to red and displays message
         function searchBoxBorder() {
             document.getElementById('searchTB').style.border = br;
-            alert('Student Id must not contain a letter');
+            const msg = "Student's Id must not contain a letter.";
+            var code = 2;
+            displayMessage(msg, code);
         }
 
+        //sets student id textbox border to red
         function idTextBoxBorder() {
-            window.alert("Enter the students id number");
             document.getElementById('idTB').style.border = br;
         }
+        //displays popup message if student id is null/empty
+        function idTextboxIsEmpty() {
+            idTextBoxBorder();
+            const msg = "Student's Id must not be empty.";
+            var code = 2;
+            displayMessage(msg, code);
+        }
+        //displays a popup message if student id contains a character
+        function idTextboxContainsCharacter() {
+            idTextBoxBorder();
+            const msg = "Student's Id must not contain a character.";
+            var code = 2;
+            displayMessage(msg, code);
+        }
+
+        //sets search student last name textbox border to red
         function lnameTextBoxBorder() {
-            window.alert("Enter the students last name");
             document.getElementById('lastnameTB').style.border = br;
         }
-
-        function genderTextBoxBorder() {
-            window.alert("Select the students gender");
-            document.getElementById('genderTB').style.border = br;
+        //displays a popup message if student last name is null/empty
+        function lnameTextboxIsEmpty() {
+            const msg = "Student's Last name must not be empty.";
+            var code = 2;
+            displayMessage(msg, code);
         }
 
+        //sets search student gender textbox border to red
+        function genderTextBoxBorder() {
+            document.getElementById('genderTB').style.border = br;
+        }
+        //displays a popup message if student gender selected the default choice
+        function genderTextboxDefaultChoice() {
+            const msg = "Select the student's gender.";
+            var code = 2;
+            displayMessage(msg, code);
+        }
+
+        //sets search student first name textbox border to red
         function fnameTextBoxBorder() {
-            window.alert("Enter the students first name");
+            window.alert("Enter the student first name");
             document.getElementById('firstnameTB').style.border = br;
         }
 
+        //sets search student middle name textbox border to red
         function mnameTextBoxBorder() {
-            window.alert("Enter the students middle name");
+            window.alert("Enter the student middle name");
             document.getElementById('middlenameTB').style.border = br;
         }
 
+        //sets search student birthdate textbox border to red
         function bdayTextBoxBorder() {
-
             document.getElementById('birthdateTB').style.border = br;
         }
 
+        //sets search student address textbox border to red
         function addressTextBoxBorder() {
             document.getElementById('addressTB').style.border = br;
         }
 
+        //sets search student email textbox border to red
         function emailTextBoxBorder() {
             document.getElementById('emailTB').style.border = br;
         }
 
+        //sets search student contact number textbox border to red
         function contactTextBoxBorder() {
             document.getElementById('contactTB').style.border = br;
         }
 
+        //sets search student enrolled program textbox border to red
         function programTextBoxBorder() {
             document.getElementById('enrolledprogramTB').style.border = br;
+            alert('Select the student enrolled course');
         }
 
+        //sets search student year level textbox border to red
         function yearTextBoxBorder() {
             document.getElementById('yearlevelTB').style.border = br;
         }
+
+        //sets search student sets credit unit textbox border to red
         function creditTextBoxBorder() {
             document.getElementById('creditunitTB').style.border = br;
         }
+
+
         function studentIdDoesNotExist() {
             document.getElementById('searchTB').style.border = br;
-            window.alert('Student Id does not exist');
+            const msg = "Student Id does not exist";
+            var code = 2;
+            displayMessage(msg, code);
         }
+
+        //displays a popup message box
+        function displayMessage(string, errorCode) {
+            const msg = document.getElementById('display-message');
+
+            var success = `<div class="alert success">
+                <span class="closebtn">&times;</span>  
+                <strong>Success!</strong> `+ string + `
+                </div>`;
+
+            var warning = `<div class="alert warning">
+                <span class="closebtn">&times;</span>  
+                <strong>Warning!</strong> `+ string + `
+                </div>`
+
+            var info = `<div class="alert info">
+                <span class="closebtn">&times;</span>  
+                <strong>Info!</strong> `+ string + `
+                </div>`
+            switch (errorCode) {
+                //shows a success message
+                case 1:
+                    msg.innerHTML = success;
+                    break;
+                // shows a warning message
+                case 2:
+                    msg.innerHTML = warning;
+                    break;
+                //shows a info message
+                case 3:
+                    msg.innerHTML = info;
+                    break;
+            }
+            
+            var close = document.getElementsByClassName("closebtn");
+            var i;
+
+            for (i = 0; i < close.length; i++) {
+                close[i].onclick = function () {
+                    var div = this.parentElement;
+                    div.style.opacity = "0";
+                    setTimeout(function () { div.style.display = "none"; }, 600);
+                }
+            }
+        }
+
+
     </script>
 </head>
 <body>
     <form id="form1" runat="server">
+        <div id="display-message">
+            
+        </div>
+
         <div id="nav-container">
             <div id="left-nav">
                 <asp:Button ID="homeBtn" runat="server" Text="Student Record Portal" OnClick="homeBtn_Click" />
@@ -459,6 +585,7 @@
                         <asp:ListItem Text="--Select Gender--"></asp:ListItem>
                         <asp:ListItem Text="Male"></asp:ListItem>
                         <asp:ListItem Text="Female"></asp:ListItem>
+                        <asp:ListItem Text="Others"></asp:ListItem>
                     </asp:DropDownList>
                     <asp:Label ID="genderLbl" runat="server" Text="Gender:"></asp:Label>
                     <asp:TextBox ID="suffixTB" runat="server"></asp:TextBox>
